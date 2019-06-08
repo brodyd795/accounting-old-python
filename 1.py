@@ -7,12 +7,15 @@ month_year = re.findall(r'\d{4}-\d{2}', now)[0]
 date = re.findall(r'\d{4}-\d{2}-\d{2}', now)[0]
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-SERVICE_ACCOUNT_FILE = '/path/to/secrets.json'
+SERVICE_ACCOUNT_FILE = 'project-1.json'
 creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-spreadsheet_id = 'my-spreadsheet-id'
-range_get_existing = '{}!A2:C6'.format(month_year)
+with open('spreadsheet.txt', 'r') as f:
+	lines = f.readlines()
+	spreadsheet_id = lines[0].rstrip()
+f.close()
 
+range_get_existing = '{}!A2:C6'.format(month_year)
 
 def read():
 	with open("credentials.txt", "r") as f:
@@ -44,7 +47,11 @@ def read():
 	    try:
 	    	matchesList.append(re.findall(r'Your Deposit of \$\d+\.\d\d is complete\.', x)[0])
 	    except:
-	    	pass	    	
+	    	pass	 
+	    try: 
+	    	matchesList.append(re.findall(r'Your transaction of \$\d+\.\d\d is complete\.', x)[0])
+	    except:
+	    	pass
 	matchesDict = {}
 	matchesListCounter = 0
 	for i in matchesList:
@@ -52,14 +59,19 @@ def read():
 		transaction_location = ''
 		transaction_type = ''
 		transaction_amount = re.findall(r'\$\d+\.\d\d', i)[0]
-		try: 
+		if "at" in i:
 			transaction_location = re.findall(r'at [^\.]+?\.', i)[0]
 			transaction_location = transaction_location[3:-1]
-		except: 
+		elif "transaction" in i:
+			transaction_location = 'Automatic withdrawal'
+		else:
 			transaction_location = 'Deposit'
+			
 		if "Deposit" in i:
 			transaction_type = 'credit'
 		elif "charged" in i:
+			transaction_type = 'debit'
+		elif "transaction" in i:
 			transaction_type = 'debit'
 		
 		matchesDict[matchesListCounter] = [transaction_amount, transaction_location, transaction_type]
@@ -113,3 +125,8 @@ def main():
 		
 if __name__ == "__main__":
 	main()
+	
+	
+# TODO
+# automatically create new sheet for a new month
+# automatically get income from past month and insert into budget for next month
