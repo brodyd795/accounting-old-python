@@ -2,7 +2,6 @@ import datetime, imaplib, re, pprint, pickle, os.path
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import requests
-from pprint import pprint
 
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 month_year = re.findall(r'\d{4}-\d{2}', now)[0]
