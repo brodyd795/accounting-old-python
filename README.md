@@ -1,5 +1,5 @@
 # Accounting
-This app pulls email notifications from my email inbox regarding new bank transactions and transfers the relevant info to a Google Sheet via their service account API for partially automated budgeting.
+This app pulls email notifications from my email inbox regarding new bank transactions and transfers the relevant info to a Google Sheet via their service account API for partially automated budgeting. It runs on an hourly bases through Cron.
 
 # Requirements
 Need to set up a service account with Google API to carry out OAuth2.0 for calling the Google Sheets API.
