@@ -153,7 +153,7 @@ def sheet():
 
 def main():
     try:
-        if day == 1:
+        if day == "01":
             create_sheet()
         sheet()
     except Exception as E:
