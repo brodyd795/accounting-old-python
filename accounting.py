@@ -7,6 +7,7 @@ now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 month_year = re.findall(r'\d{4}-\d{2}', now)[0]
 date = re.findall(r'\d{4}-\d{2}-\d{2}', now)[0]
 day = re.findall(r'\d{2}$', date)[0]
+time = re.findall(r' \d{2}:', now)[0].strip()
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SERVICE_ACCOUNT_FILE = '/home/pi/Desktop/accounting/project-1.json'
@@ -76,15 +77,15 @@ def read():
     for i in da:
         x = i.decode("utf-8")
         try:
-            matchesList.append(re.findall(r'charged \$\d+\.\d\d at[^\.]+?\.', x)[0])
+            matchesList.append(re.findall(r'charged \$[\d]+\.\d\d at[^\.]+?\.', x)[0])
         except:
             pass
         try:
-            matchesList.append(re.findall(r'Your Deposit of \$\d+\.\d\d is complete\.', x)[0])
+            matchesList.append(re.findall(r'Your Deposit of \$[\d,]+\.\d\d is complete\.', x)[0])
         except:
             pass     
         try: 
-            matchesList.append(re.findall(r'Your transaction of \$\d+\.\d\d is complete\.', x)[0])
+            matchesList.append(re.findall(r'Your transaction of \$[\d,]+\.\d\d is complete\.', x)[0])
         except:
             pass
     
@@ -95,7 +96,7 @@ def read():
         transaction_amount = ''
         transaction_location = ''
         transaction_type = ''
-        transaction_amount = re.findall(r'\$\d+\.\d\d', i)[0]
+        transaction_amount = re.findall(r'\$[,\d]+\.\d\d', i)[0]
         if "at" in i:
             transaction_location = re.findall(r'at [^\.]+?\.', i)[0]
             transaction_location = transaction_location[3:-1]
@@ -153,10 +154,18 @@ def sheet():
 
 def main():
     try:
-        if day == "01":
-            create_sheet()
+        if day == "01" and time == "00:":
+            try:
+                create_sheet()
+            except Exception as E:
+                pass
+                #print(type(E))
+                #if "Please enter another name" in E.reason:
+                #    pass
+                #else:
+                #    print(E)
         sheet()
     except Exception as E:
-        print(E)        
+        print(E)
 if __name__ == "__main__":
     main()
