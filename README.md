@@ -1,4 +1,9 @@
 # Accounting
+
+**No longer maintained**
+
+A previous iteration of my personal accounting app.
+
 This app pulls email notifications from my email inbox regarding new bank transactions and transfers the relevant info to a Google Sheet via their service account API for partially automated budgeting. It runs on an hourly basis through Cron.
 
 # Requirements
